@@ -1,0 +1,31 @@
+CA:
+  min_liability_bodily_injury: 15000
+  min_liability_property_damage: 5000
+  uninsured_motorist_required: true
+  base_rate_multiplier: 1.15
+  min_eligible_age: 16
+  max_claims_allowed: 3
+
+TX:
+  min_liability_bodily_injury: 30000
+  min_liability_property_damage: 25000
+  uninsured_motorist_required: false
+  base_rate_multiplier: 1.05
+  min_eligible_age: 16
+  max_claims_allowed: 3
+
+NY:
+  min_liability_bodily_injury: 25000
+  min_liability_property_damage: 10000
+  uninsured_motorist_required: true
+  base_rate_multiplier: 1.25
+  min_eligible_age: 17
+  max_claims_allowed: 2
+
+FL:
+  min_liability_bodily_injury: 10000
+  min_liability_property_damage: 10000
+  uninsured_motorist_required: false
+  base_rate_multiplier: 1.10
+  min_eligible_age: 16
+  max_claims_allowed: 3

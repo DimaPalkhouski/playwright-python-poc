@@ -1,0 +1,237 @@
+# US State Insurance Rule Groups
+#
+# States are grouped by their fundamental insurance rule structure.
+# Within each group, logic is identical — only rate values differ per state.
+# This grouping drives the inheritance hierarchy in rules/state_rules/.
+#
+# Groups:
+#   tort_choice   → TortStateRule base class
+#   no_fault      → NoFaultStateRule base class
+#   standard      → StandardStateRule base class
+#
+# credit_banned flag: states where credit score is BANNED as a rating factor.
+# These states inherit from their group but override credit_tier logic to ignore it.
+
+# ── Group 1: Choice No-Fault (Tort states) ───────────────────────────────────
+# Insured must choose Limited or Full Tort at policy creation.
+# Tort option is a required field — affects premium directly.
+tort_choice:
+  states:
+    PA:
+      name: Pennsylvania
+      min_eligible_age: 16
+      max_claims: 3
+      tort_full_multiplier: 1.18     # 🔲 confirm from app rate factors screen
+      pip_required: true
+      pip_minimum: 5000
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.15
+      notes: "Primary state in scope. Tort selection step is Step 8 in test flow."
+
+    NJ:
+      name: New Jersey
+      min_eligible_age: 17
+      max_claims: 3
+      tort_full_multiplier: 1.20     # 🔲 TBD
+      pip_required: true
+      pip_minimum: 15000
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 1.30
+      notes: "Also a choice no-fault state. Slightly stricter than PA."
+
+    KY:
+      name: Kentucky
+      min_eligible_age: 16
+      max_claims: 3
+      tort_full_multiplier: 1.15     # 🔲 TBD
+      pip_required: true
+      pip_minimum: 10000
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.08
+      notes: "Drivers can also reject no-fault entirely (opt-out state)."
+
+    MT:
+      name: Montana
+      min_eligible_age: 16
+      max_claims: 3
+      tort_full_multiplier: 1.12     # 🔲 TBD
+      pip_required: false
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 0.95
+      notes: "Lower population density — typically lower base rates."
+
+# ── Group 2: Pure No-Fault (PIP mandatory) ───────────────────────────────────
+# No tort choice — PIP coverage is mandatory.
+# Insured cannot sue below injury threshold.
+no_fault:
+  states:
+    NY:
+      name: New York
+      min_eligible_age: 17
+      max_claims: 2                  # stricter than most states
+      pip_required: true
+      pip_minimum: 50000
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 1.25
+      notes: "Strictest no-fault state. PIP $50k minimum. Max 2 claims."
+
+    FL:
+      name: Florida
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 10000
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.10
+      notes: "No-fault. High fraud rate historically drives up base rates."
+
+    MI:
+      name: Michigan
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: null              # MI has unlimited PIP option (choice since 2020)
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.35
+      notes: "Historically highest auto rates in US. PIP reform in 2020."
+
+    HI:
+      name: Hawaii
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 10000
+      uninsured_motorist_required: false
+      credit_banned: true            # credit score BANNED as rating factor
+      base_rate_multiplier: 1.05
+      notes: "No-fault AND credit-banned. Two rule overrides needed."
+
+    MA:
+      name: Massachusetts
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 8000
+      uninsured_motorist_required: true
+      credit_banned: true            # credit score BANNED
+      base_rate_multiplier: 1.20
+      notes: "No-fault AND credit-banned."
+
+    MN:
+      name: Minnesota
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 40000
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 1.05
+
+    UT:
+      name: Utah
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 3000
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 0.98
+
+    KS:
+      name: Kansas
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 4500
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 0.93
+
+    ND:
+      name: North Dakota
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: true
+      pip_minimum: 30000
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 0.88
+
+# ── Group 3: Standard At-Fault ───────────────────────────────────────────────
+# Majority of US states. Liability only required. No PIP, no tort choice.
+# Simplest rule structure — only base rates and multipliers differ.
+standard:
+  states:
+    TX:
+      name: Texas
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: false
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.05
+      min_liability_bi: 30000
+      min_liability_pd: 25000
+
+    CA:
+      name: California
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: false
+      uninsured_motorist_required: true
+      credit_banned: true            # credit score BANNED
+      base_rate_multiplier: 1.15
+      min_liability_bi: 15000
+      min_liability_pd: 5000
+      notes: "Credit-banned within standard at-fault group."
+
+    IL:
+      name: Illinois
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: false
+      uninsured_motorist_required: true
+      credit_banned: false
+      base_rate_multiplier: 1.00
+      min_liability_bi: 25000
+      min_liability_pd: 20000
+
+    OH:
+      name: Ohio
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: false
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 0.90
+      min_liability_bi: 25000
+      min_liability_pd: 25000
+
+    GA:
+      name: Georgia
+      min_eligible_age: 16
+      max_claims: 3
+      pip_required: false
+      uninsured_motorist_required: false
+      credit_banned: false
+      base_rate_multiplier: 1.08
+      min_liability_bi: 25000
+      min_liability_pd: 25000
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+# Group              | Base class          | Key differentiator
+# ───────────────────|─────────────────────|───────────────────────────────────
+# tort_choice        | TortStateRule       | tort_option field required
+# no_fault           | NoFaultStateRule    | PIP mandatory, no tort field
+# standard           | StandardStateRule   | liability only, simplest logic
+#
+# Cross-cutting flag:
+# credit_banned: true → override credit_tier multiplier to Decimal("1.00")
+#                        regardless of group

@@ -1,0 +1,54 @@
+# Hand-picked golden cases — these must always pass.
+# Format: list of {input, expected_monthly_premium, expected_eligible}
+
+- id: ca_standard_good_credit_35yo
+  description: "CA standard sedan, good credit, 35-year-old — baseline happy path"
+  input:
+    state: CA
+    age: 35
+    coverage_level: standard
+    vehicle_type: sedan
+    credit_tier: good
+    marital_status: single
+    prior_claims: 0
+    deductible: 500
+  expected_eligible: true
+
+- id: ny_premium_poor_credit_over_claims
+  description: "NY with 3 prior claims — should be ineligible (max_claims_allowed is 2)"
+  input:
+    state: NY
+    age: 40
+    coverage_level: premium
+    vehicle_type: suv
+    credit_tier: poor
+    marital_status: married
+    prior_claims: 3
+    deductible: 500
+  expected_eligible: false
+
+- id: tx_basic_young_driver
+  description: "TX basic, 20-year-old — eligible, higher rate expected"
+  input:
+    state: TX
+    age: 20
+    coverage_level: basic
+    vehicle_type: sedan
+    credit_tier: fair
+    marital_status: single
+    prior_claims: 0
+    deductible: 1000
+  expected_eligible: true
+
+- id: fl_standard_senior_driver
+  description: "FL standard, 70-year-old — eligible"
+  input:
+    state: FL
+    age: 70
+    coverage_level: standard
+    vehicle_type: sedan
+    credit_tier: good
+    marital_status: married
+    prior_claims: 0
+    deductible: 500
+  expected_eligible: true
