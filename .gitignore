@@ -1,3 +1,4 @@
 /.env.example
 /.pytest_cache
 /.vscode
+/reports/
